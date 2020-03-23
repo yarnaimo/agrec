@@ -4,6 +4,7 @@ agqr を録画するやつ
 
 ## Requirement
 
+-   **rtmpdump**
 -   **Node.js** (>=12)
 -   **yarn** (npm を使う場合は適宜読み替えてください)
 
@@ -17,20 +18,20 @@ git clone https://github.com/yarnaimo/agrec.git
 
 ### 設定ファイルを作る
 
-**`src/.config/env-default.ts`**
+**`src/.config/default.ts`**
 
 ```ts
-import { Env } from '../services/env'
+import { Config } from '../services/config'
 
-export const envDefault: Env = {
+export const configDefault: Config = {
     webhookUrl: 'https://hooks.slack.com/services/xxxxx', // 通知しない場合は null
 
     reserves: [
         {
             label: 'himitsubako', // ラベル (ファイル名の prefix)
             dow: 2, // 曜日
-            hour: 21, // 時
-            minute: 30, // 分
+            start: [21, 30], // 時, 分
+            durationMinutes: 30, // 長さ (分)
         },
     ],
 }
@@ -38,7 +39,7 @@ export const envDefault: Env = {
 
 ### 録画テストスクリプトを cron に登録する
 
-agqr は URL がよく変わるので一定間隔で録画テストを行い、失敗したら slack に通知を送るようにする
+agqr は URL がよく変わるので一定間隔で録画テストを行うようにする (失敗したら config で設定した webhook に通知される)
 
 ```sh
 0 0,12  * * *  root   cd path/agrec && yarn ts-node src/api/test-rec.ts
