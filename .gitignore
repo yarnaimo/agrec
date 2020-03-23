@@ -21,6 +21,7 @@ Thumbs.db
 
 .cache
 .config
+.data
 .env
 .firebase
 .next

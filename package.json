@@ -15,7 +15,9 @@
     "ts-node": "ts-node"
   },
   "dependencies": {
-    "@yarnaimo/rain": "^0.5.2"
+    "@slack/webhook": "^5.0.3",
+    "@yarnaimo/rain": "^0.5.2",
+    "tish": "^0.0.8"
   },
   "devDependencies": {
     "@yarnaimo/tss": "^0.1.15"
