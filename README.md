@@ -39,18 +39,16 @@ export const configDefault: Config = {
 }
 ```
 
-### 録画テストスクリプトを cron に登録する
+### 録画テストスクリプト / 自動録画スクリプトを cron に登録する
 
 agqr は URL がよく変わるので一定間隔で録画テストを行うようにする (失敗したら config で設定した webhook に通知される)
 
 ```sh
-0 0,12  * * *   cd path/agrec && node dist/api/test-rec.js >> .data/cron.log 2>&1
-```
+PATH=/usr/bin:/usr/local/bin:$PATH
 
-### 自動録画スクリプトを cron に登録する
+0 0,12  * * *   cd path/agrec && node_modules/.bin/ts-node src/api/test-rec.ts >> .data/cron.log 2>&1
 
-```sh
-* *     * * *   cd path/agrec && node dist/api/start-ready-reserves.js >> .data/cron.log 2>&1
+* *     * * *   cd path/agrec && node_modules/.bin/ts-node src/api/start-ready-reserves.ts >> .data/cron.log 2>&1
 ```
 
 ## .agserver ファイルについて
