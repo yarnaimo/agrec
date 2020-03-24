@@ -1,3 +1,6 @@
 module.exports = {
-    ...require('@yarnaimo/tss/.huskyrc.js'),
+    hooks: {
+        ...require('@yarnaimo/tss/.huskyrc.js').hooks,
+        'post-merge': 'yarn build',
+    },
 }
