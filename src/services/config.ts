@@ -3,6 +3,7 @@ import { Reserve } from './reserve'
 
 export type Config = {
     webhookUrl: string | null
+    driveFolder: string | null
     reserves: Reserve[]
 }
 

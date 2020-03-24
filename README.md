@@ -1,12 +1,15 @@
 # agrec
 
-agqr を録画するやつ
+agqr を録画して Google ドライブにアップロードするやつ
 
 ## Requirement
+
+Ubuntu 以外は動作確認していません
 
 -   **rtmpdump**
 -   **Node.js** (>=12)
 -   **yarn** (npm を使う場合は適宜読み替えてください)
+-   **ts-node** (`yarn global add ts-node` でインストール)
 
 ## Install
 
@@ -18,6 +21,13 @@ cd agrec
 yarn
 ```
 
+### Google Drive API の準備
+
+1.  https://developers.google.com/drive/api/v3/quickstart/nodejs の **Enable the Drive API** をクリック
+2.  **Download client configuration** をクリックしてダウンロードした `credential.json` を `.data/` に移動する
+3.  `node authorize-google-drive.js` を実行して表示された URL をブラウザで開き、最後に表示されるコードをターミナルに貼り付ける
+4.  `.data/token.json` が作られたのを確認する
+
 ### 設定ファイルを作る
 
 **`src/.config/default.ts`**
@@ -27,9 +37,11 @@ import { Config } from '../services/config'
 
 export const configDefault: Config = {
     webhookUrl: 'https://hooks.slack.com/services/xxxxx', // 通知しない場合は null
+    driveFolder: 'xxxxx', // Google ドライブのフォルダ ID (URL の末尾)
 
     reserves: [
         {
+            active: true,
             label: 'himitsubako', // ラベル (ファイル名の prefix)
             dow: 2, // 曜日
             start: [21, 30], // 時, 分

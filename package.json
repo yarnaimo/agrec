@@ -17,6 +17,7 @@
   "dependencies": {
     "@slack/webhook": "^5.0.3",
     "@yarnaimo/rain": "^0.5.2",
+    "googleapis": "^48.0.0",
     "tish": "^0.0.8"
   },
   "devDependencies": {
