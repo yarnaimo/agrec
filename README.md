@@ -10,10 +10,12 @@ agqr を録画するやつ
 
 ## Install
 
-### リポジトリを clone する
+### リポジトリを clone して依存関係をインストールする
 
 ```
 git clone https://github.com/yarnaimo/agrec.git
+cd agrec
+yarn
 ```
 
 ### 設定ファイルを作る
@@ -42,13 +44,13 @@ export const configDefault: Config = {
 agqr は URL がよく変わるので一定間隔で録画テストを行うようにする (失敗したら config で設定した webhook に通知される)
 
 ```sh
-0 0,12  * * *  root   cd path/agrec && yarn ts-node src/api/test-rec.ts
+0 0,12  * * *   cd path/agrec && yarn ts-node src/api/test-rec.ts >> .data/cron.log 2>&1
 ```
 
 ### 自動録画スクリプトを cron に登録する
 
 ```sh
-* *     * * *  root   cd path/agrec && yarn ts-node src/api/start-ready-reserves.ts
+* *     * * *   cd path/agrec && yarn ts-node src/api/start-ready-reserves.ts >> .data/cron.log 2>&1
 ```
 
 ## .agserver ファイルについて
