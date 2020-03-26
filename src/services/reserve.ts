@@ -3,6 +3,7 @@ import { dayjs } from './date'
 
 export type Reserve = {
     active: boolean
+    audioOnly?: boolean
     label: string
     dow: number
     start: [number, number]
@@ -10,20 +11,22 @@ export type Reserve = {
 }
 
 export const getReadyReserves = () => {
-    const now = dayjs().add(1, 'minute')
+    const time = dayjs()
+        .set('second', 0)
+        .add(1, 'minute')
 
     const readyReserves = config.reserves
         .filter(({ active, dow, start: [h, m] }) => {
-            const sameDow = now.day() === dow
-            const sameTime = now.hour() === h && now.minute() === m
+            const sameDow = time.day() === dow
+            const sameTime = time.hour() === h && time.minute() === m
             return active && sameDow && sameTime
         })
-        .map(({ label, durationMinutes }) => {
+        .map(({ durationMinutes, ...rest }) => {
             return {
-                label,
-                durationSeconds: (durationMinutes + 2) * 60,
+                ...rest,
+                durationSeconds: durationMinutes * 60 + 15,
             }
         })
 
-    return { now, readyReserves }
+    return { time, readyReserves }
 }

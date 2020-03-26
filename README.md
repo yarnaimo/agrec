@@ -7,6 +7,7 @@ agqr を録画して Google ドライブにアップロードするやつ
 Ubuntu 以外は動作確認していません
 
 -   **rtmpdump**
+-   **ffmpeg**
 -   **Node.js** (>=12)
 -   **yarn** (npm を使う場合は適宜読み替えてください)
 -   **ts-node** (`yarn global add ts-node` でインストール)
@@ -42,6 +43,7 @@ export const configDefault: Config = {
     reserves: [
         {
             active: true,
+            audioOnly: true, // 録画後に音声のみ抽出する
             label: 'himitsubako', // ラベル (ファイル名の prefix)
             dow: 2, // 曜日
             start: [21, 30], // 時, 分
