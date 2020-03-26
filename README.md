@@ -60,9 +60,8 @@ agqr は URL がよく変わるので一定間隔で録画テストを行うよ�
 ```sh
 PATH=/usr/bin:/usr/local/bin:$PATH
 
-0 0,12  * * *   cd path/agrec && node_modules/.bin/ts-node src/api/test-rec.ts >> .data/cron.log 2>&1
-
-* *     * * *   cd path/agrec && node_modules/.bin/ts-node src/api/start-ready-reserves.ts >> .data/cron.log 2>&1
+0 0,12  * * *   cd path/agrec && ./cron.sh src/api/test-rec.ts
+* *     * * *   cd path/agrec && ./cron.sh src/api/start-ready-reserves.ts
 ```
 
 ## .agserver ファイルについて
