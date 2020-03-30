@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  agrec:
+    build:
+      context: .
+    image: agrec
+    volumes:
+      - ./.data:/service/.data
+      - .:/service/repo
+    environment:
+      TZ: 
+    restart: always
