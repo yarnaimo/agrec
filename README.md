@@ -25,7 +25,7 @@ yarn
 ### Google Drive API の準備
 
 1.  https://developers.google.com/drive/api/v3/quickstart/nodejs の **Enable the Drive API** をクリック
-2.  **Download client configuration** をクリックしてダウンロードした `credential.json` を `.data/` に移動する
+2.  **Download client configuration** をクリックしてダウンロードした `credentials.json` を `.data/` に移動する
 3.  `node authorize-google-drive.js` を実行して表示された URL をブラウザで開き、最後に表示されるコードをターミナルに貼り付ける
 4.  `.data/token.json` が作られたのを確認する
 
