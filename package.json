@@ -9,8 +9,10 @@
     "build": "tsc",
     "debug": "node --inspect -r ts-node/register",
     "dev": "yarn ts-node src/index.ts",
+    "logs": "pm2 logs pm2.config.js",
     "prepare": "mkdir -p .data && NODE_OPTIONS='--max_old_space_size=2560' yarn build",
     "start": "pm2 startOrRestart pm2.config.js --env production",
+    "stop": "pm2 stop pm2.config.js",
     "test": "NODE_ENV=test jest",
     "ts-node": "ts-node"
   },
