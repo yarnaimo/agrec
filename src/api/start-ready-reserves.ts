@@ -10,7 +10,7 @@ import { getReadyReserves } from '../services/reserve'
 import { sendWebhook } from '../services/webhook'
 
 export const startReadyReserves = async () => {
-    log('startReadyReserves')
+    // log('startReadyReserves')
 
     const { time, readyReserves } = getReadyReserves()
     const dateStr = time.format('YYYYMMDD')
