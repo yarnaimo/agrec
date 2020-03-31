@@ -26,6 +26,7 @@ Thumbs.db
 .firebase
 .next
 config
+config.yaml
 coverage
 dist/**/*
 node_modules

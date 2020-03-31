@@ -1,10 +1,42 @@
-import { configDefault } from '../.config/default'
-import { Reserve } from './reserve'
+import { readFileSync, watch } from 'fs'
+import { load } from 'js-yaml'
+import { Reserve, stringifyReserve } from './reserve'
+import { sendWebhook } from './webhook'
 
-export type Config = {
+const configPath = 'config.yaml'
+
+export type ConfigType = {
     webhookUrl: string | null
     driveFolder: string | null
     reserves: Reserve[]
 }
 
-export const config = configDefault
+let _config: ConfigType = {
+    driveFolder: null,
+    webhookUrl: null,
+    reserves: [],
+}
+
+export const appConfig = {
+    get: () => _config,
+    load: () => {
+        const str = readFileSync(configPath, 'utf8')
+        _config = load(str) as ConfigType
+    },
+}
+
+appConfig.load()
+
+export const watchConfig = () => {
+    const watcher = watch(configPath, () => {
+        appConfig.load()
+        const reserveStrs = appConfig.get().reserves.map(stringifyReserve)
+
+        sendWebhook(
+            `設定ファイルが更新されました\n\n*予約リスト*\n${reserveStrs.join(
+                '\n',
+            )}`,
+        )
+    })
+    return { unwatch: () => watcher.close() }
+}

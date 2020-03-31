@@ -1,9 +1,11 @@
 import { IncomingWebhook } from '@slack/webhook'
-import { config } from './config'
+import { appConfig } from './config'
 
-export const webhook = config.webhookUrl
-    ? new IncomingWebhook(config.webhookUrl)
-    : null
+export const sendWebhook = async (text: string) => {
+    const config = appConfig.get()
 
-export const sendWebhook = (text: string) =>
-    webhook?.send({ username: 'agrec', text })
+    const webhook = config.webhookUrl
+        ? new IncomingWebhook(config.webhookUrl)
+        : null
+    await webhook?.send({ username: 'agrec', text })
+}

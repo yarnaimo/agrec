@@ -1,32 +1,60 @@
-import { config } from './config'
-import { dayjs } from './date'
+import { appConfig } from './config'
+import { dayjs, stringifyTimeTuple } from './date'
 
 export type Reserve = {
-    active: boolean
+    disabled?: boolean
     audioOnly?: boolean
     label: string
-    dow: number
+    wday: number
     start: [number, number]
-    durationMinutes: number
+    length: number
 }
 
-export const getReadyReserves = () => {
-    const time = dayjs()
-        .set('second', 0)
-        .add(1, 'minute')
+export type ReserveWithSeconds = Reserve & {
+    durationSeconds: number
+}
 
-    const readyReserves = config.reserves
-        .filter(({ active, dow, start: [h, m] }) => {
-            const sameDow = time.day() === dow
-            const sameTime = time.hour() === h && time.minute() === m
-            return active && sameDow && sameTime
+const wdays = [...'日月火水木金土']
+
+export const stringifyReserve = ({
+    disabled,
+    audioOnly,
+    label,
+    wday,
+    start,
+    length,
+}: Reserve) => {
+    const _ = disabled ? '~' : ''
+    return (
+        _ +
+        [
+            audioOnly ? '音声' : '動画',
+            wdays[wday],
+            stringifyTimeTuple(start, true),
+            `${length}分`,
+            label,
+        ].join(' ') +
+        _
+    )
+}
+
+export const getReservesWithDate = (
+    date: dayjs.Dayjs,
+): ReserveWithSeconds[] => {
+    const reserves = appConfig
+        .get()
+        .reserves.filter(({ disabled, wday, start: [h, m] }) => {
+            const sameDow = date.day() === wday
+            const sameTime = date.hour() === h && date.minute() === m
+            return !disabled && sameDow && sameTime
         })
-        .map(({ durationMinutes, ...rest }) => {
+        .map(({ length, ...rest }) => {
             return {
                 ...rest,
-                durationSeconds: durationMinutes * 60 + 15,
+                length,
+                durationSeconds: length * 60 + 15,
             }
         })
 
-    return { time, readyReserves }
+    return reserves
 }

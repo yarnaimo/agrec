@@ -1,22 +1,23 @@
 import { $ } from '@yarnaimo/rain'
 import { basename } from 'path'
 import { rec } from '../services/ag'
-import { config } from '../services/config'
-import { dayjs, sleep } from '../services/date'
+import { appConfig } from '../services/config'
+import { dayjs, Dayjs, sleep } from '../services/date'
 import { extractAudio } from '../services/ffmpeg'
 import { uploadToDrive } from '../services/google-drive'
 import { log } from '../services/log'
-import { getReadyReserves } from '../services/reserve'
+import { getReservesWithDate } from '../services/reserve'
 import { sendWebhook } from '../services/webhook'
 
-export const startReadyReserves = async () => {
-    // log('startReadyReserves')
+export const startRecs = async (currentDate: Dayjs) => {
+    const config = appConfig.get()
+    const nextMinute = currentDate.add(1, 'minute')
+    const reserves = getReservesWithDate(nextMinute)
 
-    const { time, readyReserves } = getReadyReserves()
-    const dateStr = time.format('YYYYMMDD')
+    const dateStr = nextMinute.format('YYYYMMDD')
 
     await $.p(
-        readyReserves,
+        reserves,
 
         $.map(async ({ audioOnly, label, durationSeconds }) => {
             const base = `${label}-${dateStr}`
@@ -24,8 +25,8 @@ export const startReadyReserves = async () => {
             const audioPath = `.data/${base}.aac`
 
             try {
-                const sleepMs = time.valueOf() - dayjs().valueOf() - 10 * 1000
-                log(`sleep for ${sleepMs / 1000}s`)
+                const sleepMs =
+                    nextMinute.valueOf() - dayjs().valueOf() - 10 * 1000
                 await sleep(sleepMs)
 
                 await rec(durationSeconds, videoPath)
@@ -48,5 +49,3 @@ export const startReadyReserves = async () => {
         }),
     )
 }
-
-startReadyReserves()
