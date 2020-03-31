@@ -10,7 +10,7 @@ Ubuntu 以外は動作確認していません
 -   **ffmpeg**
 -   **Node.js** (>=12)
 -   **yarn** (npm を使う場合は適宜読み替えてください)
--   **ts-node** (`yarn global add ts-node` でインストール)
+-   **pm2** (`yarn global add pm2` でインストール)
 
 ## Install
 
@@ -31,37 +31,32 @@ yarn
 
 ### 設定ファイルを作る
 
-**`src/.config/default.ts`**
+**`config.yaml`**
 
-```ts
-import { Config } from '../services/config'
+```yaml
+webhookUrl: 'https://hooks.slack.com/services/xxxxx' # 通知しない場合は null
+driveFolder: 'xxxxx' # Google ドライブのフォルダ ID (URL の末尾)
 
-export const configDefault: Config = {
-    webhookUrl: 'https://hooks.slack.com/services/xxxxx', // 通知しない場合は null
-    driveFolder: 'xxxxx', // Google ドライブのフォルダ ID (URL の末尾)
-
-    reserves: [
-        {
-            active: true,
-            audioOnly: true, // 録画後に音声のみ抽出する
-            label: 'himitsubako', // ラベル (ファイル名の prefix)
-            dow: 2, // 曜日
-            start: [21, 30], // 時, 分
-            durationMinutes: 30, // 長さ (分)
-        },
-    ],
-}
+reserves:
+    - label: 'himitsubako'
+      disabled: false
+      audioOnly: true # 録画後に音声のみ抽出する
+      wday: 2 # 曜日
+      start: [21, 30] # 時, 分
+      length: 30 # 長さ (分)
 ```
 
-### 録画テストスクリプト / 自動録画スクリプトを cron に登録する
-
-agqr は URL がよく変わるので一定間隔で録画テストを行うようにする (失敗したら config で設定した webhook に通知される)
+### サービスを起動する
 
 ```sh
-PATH=/usr/bin:/usr/local/bin:$PATH
+yarn start
+```
 
-0 0,12  * * *   cd path/agrec && ./cron.sh src/api/test-rec.ts
-* *     * * *   cd path/agrec && ./cron.sh src/api/start-ready-reserves.ts
+## アップデート方法
+
+```
+git pull
+yarn
 ```
 
 ## .agserver ファイルについて
