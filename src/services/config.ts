@@ -1,4 +1,5 @@
-import { readFileSync, watch } from 'fs'
+import chokidar from 'chokidar'
+import { readFileSync } from 'fs'
 import { load } from 'js-yaml'
 import { Reserve, stringifyReserve } from './reserve'
 import { sendWebhook } from './webhook'
@@ -28,7 +29,7 @@ export const appConfig = {
 appConfig.load()
 
 export const watchConfig = () => {
-    const watcher = watch(configPath, () => {
+    const watcher = chokidar.watch(configPath).on('change', () => {
         appConfig.load()
         const reserveStrs = appConfig.get().reserves.map(stringifyReserve)
 
