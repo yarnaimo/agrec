@@ -2,7 +2,7 @@ import { rec } from '../services/ag'
 import { log } from '../services/log'
 import { sendWebhook } from '../services/webhook'
 
-const testRec = async () => {
+export const testRec = async () => {
     log('testRec')
 
     try {
@@ -14,5 +14,3 @@ const testRec = async () => {
         )
     }
 }
-
-testRec()
