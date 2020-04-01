@@ -57,6 +57,7 @@ yarn start
 ```
 git pull
 yarn
+yarn start
 ```
 
 ## .agserver ファイルについて

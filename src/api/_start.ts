@@ -7,7 +7,7 @@ import { testRec } from './test-rec'
 
 watchConfig()
 
-schedule.scheduleJob({ second: 0 }, async fireDate => {
+schedule.scheduleJob({ second: 50 }, async fireDate => {
     const currentDate = dayjs(fireDate)
 
     startRecs(currentDate)

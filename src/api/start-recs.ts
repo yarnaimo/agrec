@@ -2,7 +2,7 @@ import { $ } from '@yarnaimo/rain'
 import { basename } from 'path'
 import { rec } from '../services/ag'
 import { appConfig } from '../services/config'
-import { dayjs, Dayjs, sleep } from '../services/date'
+import { Dayjs } from '../services/date'
 import { extractAudio } from '../services/ffmpeg'
 import { uploadToDrive } from '../services/google-drive'
 import { log } from '../services/log'
@@ -11,7 +11,7 @@ import { sendWebhook } from '../services/webhook'
 
 export const startRecs = async (currentDate: Dayjs) => {
     const config = appConfig.get()
-    const nextMinute = currentDate.add(1, 'minute')
+    const nextMinute = currentDate.add(1, 'minute').second(0)
     const reserves = getReservesWithDate(nextMinute)
 
     const dateStr = nextMinute.format('YYYYMMDD')
@@ -25,10 +25,6 @@ export const startRecs = async (currentDate: Dayjs) => {
             const audioPath = `.data/${base}.aac`
 
             try {
-                const sleepMs =
-                    nextMinute.valueOf() - dayjs().valueOf() - 10 * 1000
-                await sleep(sleepMs)
-
                 await rec(durationSeconds, videoPath)
                 if (audioOnly) {
                     await extractAudio(videoPath, audioPath)
