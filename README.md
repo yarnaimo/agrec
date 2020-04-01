@@ -1,6 +1,12 @@
 # agrec
 
-agqr を録画して Google ドライブにアップロードするやつ
+agqr を録画して Google ドライブにアップロードするやつ (v2)
+
+## ⚠ v1 からの変更点
+
+-   設定ファイルのフォーマットが変わっています
+-   cron を使わずにサービス化するようになりました。cron は消してください
+-   `.data/credentials.json` と `.data/token.json` はコピーしてください
 
 ## Requirement
 
