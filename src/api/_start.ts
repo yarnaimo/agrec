@@ -5,7 +5,7 @@ import { notifyUpcomingReserves } from './notify-upcoming-reserves'
 import { startRecs } from './start-recs'
 import { testRec } from './test-rec'
 
-watchConfig()
+let unwatch = watchConfig().unwatch
 
 schedule.scheduleJob({ second: 50 }, async fireDate => {
     const currentDate = dayjs(fireDate)
@@ -16,4 +16,9 @@ schedule.scheduleJob({ second: 50 }, async fireDate => {
 
 schedule.scheduleJob({ hour: [0, 12], minute: 0 }, async fireDate => {
     await testRec()
+})
+
+schedule.scheduleJob({ hour: [0, 12], minute: 0 }, async fireDate => {
+    await unwatch()
+    unwatch = watchConfig().unwatch
 })
