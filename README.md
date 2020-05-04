@@ -75,3 +75,52 @@ yarn start
 録画用 URL が書かれた **`.agserver`** ファイルは git の管理下にあります。
 
 誰かがリモートの `.agserver` を更新したら `git pull` でローカルに反映できますが、遅いときは各自で書き換えてください。
+
+## Dockerでの実行方法
+
+### Requirement
+
+-   **Docker**
+-   **Docker Compose**
+
+
+### Install
+
+#### 1. リポジトリを clone
+
+```
+git clone https://github.com/yarnaimo/agrec.git
+cd agrec
+```
+
+#### 2. 設定ファイルの作成
+
+通常インストール手順の [2. Google Drive API の準備](#2-google-drive-api-の準備) 、および [3. 設定ファイルを作る](#3-設定ファイルを作る) を実施してください。
+
+タイムゾーンが `Asia/Tokyo` で問題ない場合は以下を実行します。
+
+```
+cp .env.sample .env
+```
+
+それ以外に設定する場合は上記実行後に `.env` ファイルの環境変数 `TZ` の値を変更してください。
+
+
+#### 3. Dockerコンテナをバックグラウンドで起動
+
+```
+docker-compose up -d
+```
+
+### アップデート方法
+
+**`config.yaml`** はホスト側のファイルを編集することで反映されます。
+
+**`.agserver`** ファイルの更新だけであれば `git pull` で反映されます。
+
+それ以外の場合は以下を実行してください。
+
+```
+git pull
+docker-compose up -d --build
+```
