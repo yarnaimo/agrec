@@ -1,5 +1,5 @@
 import chokidar from 'chokidar'
-import { readFileSync } from 'fs'
+import { readFile } from 'fs-extra'
 import { load } from 'js-yaml'
 import { Reserve, stringifyReserve } from './reserve'
 import { sendWebhook } from './webhook'
@@ -20,8 +20,8 @@ let _config: ConfigType = {
 
 export const appConfig = {
     get: () => _config,
-    load: () => {
-        const str = readFileSync(configPath, 'utf8')
+    load: async () => {
+        const str = await readFile(configPath, 'utf8')
         _config = load(str) as ConfigType
     },
 }
@@ -29,11 +29,11 @@ export const appConfig = {
 appConfig.load()
 
 export const watchConfig = () => {
-    const watcher = chokidar.watch(configPath).on('change', () => {
-        appConfig.load()
+    const watcher = chokidar.watch(configPath).on('change', async () => {
+        await appConfig.load()
         const reserveStrs = appConfig.get().reserves.map(stringifyReserve)
 
-        sendWebhook(
+        await sendWebhook(
             `設定ファイルが更新されました\n\n*予約リスト*\n${reserveStrs.join(
                 '\n',
             )}`,

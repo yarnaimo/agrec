@@ -1,4 +1,4 @@
-import { createReadStream } from 'fs'
+import { createReadStream } from 'fs-extra'
 import { OAuth2Client } from 'google-auth-library'
 import { google } from 'googleapis'
 import { basename } from 'path'
