@@ -9,6 +9,7 @@ const configPath = 'config.yaml'
 export type ConfigType = {
     webhookUrl: string | null
     driveFolder: string | null
+    deleteLocal?: boolean
     reserves: Reserve[]
 }
 

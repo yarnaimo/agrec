@@ -44,6 +44,9 @@ export const startRecs = async (currentDate: Dayjs) => {
                     await sendWebhook(
                         `${encodedFilename} をアップロードしました`,
                     )
+                    if (config.deleteLocal) {
+                        await unlink(encodedPath)
+                    }
                 } else {
                     await sendWebhook(
                         `${encodedFilename} をローカルに保存しました`,

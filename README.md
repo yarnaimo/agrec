@@ -46,6 +46,7 @@ yarn
 ```yaml
 webhookUrl: 'https://hooks.slack.com/services/xxxxx' # 通知しない場合は null
 driveFolder: 'xxxxx' # Google ドライブのフォルダ ID (URL の末尾)
+deleteLocal: true # Google ドライブへのアップロード後にローカルの録画ファイルを削除する
 
 reserves:
     - label: 'himitsubako'
