@@ -10,6 +10,8 @@ import { log } from '../services/log'
 import { getReservesWithDate } from '../services/reserve'
 import { sendWebhook } from '../services/webhook'
 
+const googleDriveURLPrefix = 'https://drive.google.com/drive/folders/'
+
 export const startRecs = async (currentDate: Dayjs) => {
     const config = appConfig.get()
     const nextMinute = currentDate.add(1, 'minute').second(0)
@@ -42,7 +44,7 @@ export const startRecs = async (currentDate: Dayjs) => {
                 if (config.driveFolder) {
                     await uploadToDrive(encodedPath, config.driveFolder)
                     await sendWebhook(
-                        `${encodedFilename} をアップロードしました`,
+                        `${encodedFilename} をアップロードしました\n${googleDriveURLPrefix}${config.driveFolder}`,
                     )
                     if (config.deleteLocal) {
                         await unlink(encodedPath)
