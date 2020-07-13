@@ -9,7 +9,7 @@ export const rec = async (length: number, path: string) => {
     await mkdirp(dirname(path))
 
     await $(
-        `rtmpdump --live --rtmp ${serverUrl} --timeout 60 -B ${length} -o ${path}`,
+        `rtmpdump --live --rtmp ${serverUrl} --timeout 60 -B ${length} -o "${path}"`,
     )
     const { size } = await stat(path)
     if (!size) {
