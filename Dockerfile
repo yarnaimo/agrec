@@ -6,9 +6,12 @@ RUN apk add --no-cache curl rtmpdump ffmpeg && \
     apk del curl
 
 ENV PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH
-COPY . /service
 WORKDIR /service
-RUN yarn
+COPY package.json yarn.lock ./
+RUN yarn --ignore-scripts
+
+COPY . .
+RUN yarn prepare
 
 RUN ln -fs /service/repo/config.yaml && \
     ln -fs /service/repo/.agserver
