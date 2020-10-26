@@ -41,10 +41,10 @@ loadConfig()
 const onConfigChange = async () => {
     log('config file changed')
     const reserveStrs = getConfig().reserves.map(stringifyReserve)
+    const quotedBlock = ['*予約リスト*', ...reserveStrs].map(str => `> ${str}`)
+
     await sendWebhook(
-        `設定ファイルが更新されました\n\n*予約リスト*\n${reserveStrs.join(
-            '\n',
-        )}`,
+        ['設定ファイルが更新されました', ...quotedBlock].join('\n'),
     )
 }
 
