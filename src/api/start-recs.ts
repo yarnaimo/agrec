@@ -2,7 +2,7 @@ import { unlink } from 'fs-extra'
 import { Do, MapAsync, P } from 'lifts'
 import { basename } from 'path'
 import { rec } from '../services/ag'
-import { appConfig } from '../services/config'
+import { getConfig } from '../services/config'
 import { Dayjs } from '../services/date'
 import { extractAudio } from '../services/ffmpeg'
 import { uploadToDrive } from '../services/google-drive'
@@ -13,7 +13,7 @@ import { sendWebhook } from '../services/webhook'
 const googleDriveURLPrefix = 'https://drive.google.com/drive/folders/'
 
 export const startRecs = async (currentDate: Dayjs) => {
-    const config = appConfig.get()
+    const config = getConfig()
     const nextMinute = currentDate.add(1, 'minute').second(0)
     const reserves = getReservesWithDate(nextMinute)
 
