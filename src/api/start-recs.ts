@@ -1,9 +1,9 @@
-import { unlink } from 'fs-extra'
+import { readFileSync, unlink } from 'fs-extra'
 import { Do, MapAsync, P } from 'lifts'
 import { basename } from 'path'
 import { rec } from '../services/ag'
 import { getConfig } from '../services/config'
-import { Dayjs } from '../services/date'
+import { Dayjs, sleep } from '../services/date'
 import { extractAudio } from '../services/ffmpeg'
 import { uploadToDrive } from '../services/google-drive'
 import { log } from '../services/log'
@@ -11,6 +11,8 @@ import { getReservesWithDate } from '../services/reserve'
 import { sendWebhook } from '../services/webhook'
 
 const googleDriveURLPrefix = 'https://drive.google.com/drive/folders/'
+
+const delay = parseInt(readFileSync('.agdelay', 'utf8').trim())
 
 export const startRecs = async (currentDate: Dayjs) => {
     const config = getConfig()
@@ -24,10 +26,11 @@ export const startRecs = async (currentDate: Dayjs) => {
 
         MapAsync(async ({ audioOnly, label, durationSeconds }) => {
             const base = `${label}-${dateStr}`
-            const videoPath = `.data/${base}.flv`
+            const videoPath = `.data/${base}.mp4`
             const audioPath = `.data/${base}.aac`
 
             try {
+                await sleep(delay)
                 await rec(durationSeconds, videoPath)
 
                 const encodedPath = await Do(async () => {
