@@ -1,11 +1,11 @@
 import { IncomingWebhook } from '@slack/webhook'
 import { hostname } from 'os'
-import { appConfig } from './config'
+import { getConfig } from './config'
 
 const hostnameLabel = `*[${hostname()}]*`
 
 export const sendWebhook = async (text: string) => {
-    const config = appConfig.get()
+    const config = getConfig()
 
     const webhook = config.webhookUrl
         ? new IncomingWebhook(config.webhookUrl)

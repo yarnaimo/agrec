@@ -1,4 +1,4 @@
-import { appConfig } from './config'
+import { getConfig } from './config'
 import { dayjs, stringifyTimeTuple } from './date'
 
 export type Reserve = {
@@ -41,8 +41,7 @@ export const stringifyReserve = ({
 export const getReservesWithDate = (
     date: dayjs.Dayjs,
 ): ReserveWithSeconds[] => {
-    const reserves = appConfig
-        .get()
+    const reserves = getConfig()
         .reserves.filter(({ disabled, wday, start: [h, m] }) => {
             const sameDow = date.day() === wday
             const sameTime = date.hour() === h && date.minute() === m
