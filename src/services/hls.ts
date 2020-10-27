@@ -67,7 +67,7 @@ export const recStream = async (
 
     const newSegments = playlist.segments
       .filter(segment => segment.mediaSequenceNumber > knownSegmentNumber)
-      .slice(durationCount ? 0 : -1) // keep only last segment if first loop
+      .slice(durationCount ? 0 : -3) // keep only last segment if first loop
 
     for (const segment of newSegments) {
       durationCount += segment.duration
