@@ -1,3 +1,3 @@
 declare module 'tish' {
-    export const $: any
+  export const $: any
 }

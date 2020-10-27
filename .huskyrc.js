@@ -1,3 +1,3 @@
 module.exports = {
-    ...require('@yarnaimo/tss/.huskyrc.js'),
+  ...require('@yarnaimo/tss/.huskyrc.js'),
 }
