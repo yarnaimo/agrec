@@ -16,7 +16,6 @@ agqr を録画して Google ドライブにアップロードするやつ (v2)
 
 Ubuntu 以外は動作確認していません
 
--   **rtmpdump**
 -   **ffmpeg**
 -   **Node.js** (>=12)
 -   **yarn** (npm を使う場合は適宜読み替えてください)
@@ -71,19 +70,18 @@ yarn
 yarn start
 ```
 
-## .agserver ファイルについて
+## .agstream ファイルについて
 
-録画用 URL が書かれた **`.agserver`** ファイルは git の管理下にあります。
+ストリーミング URL が書かれた **`.agstream`** ファイルは git の管理下にあります。
 
-誰かがリモートの `.agserver` を更新したら `git pull` でローカルに反映できますが、遅いときは各自で書き換えてください。
+誰かがリモートの `.agstream` を更新したら `git pull` でローカルに反映できますが、遅いときは各自で書き換えてください。
 
-## Dockerでの実行方法
+## Docker での実行方法
 
 ### Requirement
 
 -   **Docker**
 -   **Docker Compose**
-
 
 ### Install
 
@@ -106,8 +104,7 @@ cp .env.sample .env
 
 それ以外に設定する場合は上記実行後に `.env` ファイルの環境変数 `TZ` の値を変更してください。
 
-
-#### 3. Dockerコンテナをバックグラウンドで起動
+#### 3. Docker コンテナをバックグラウンドで起動
 
 ```
 docker-compose up -d
@@ -117,7 +114,7 @@ docker-compose up -d
 
 **`config.yaml`** はホスト側のファイルを編集することで反映されます。
 
-**`.agserver`** ファイルの更新だけであれば `git pull` で反映されます。
+**`.agstream`** ファイルの更新だけであれば `git pull` で反映されます。
 
 それ以外の場合は以下を実行してください。
 

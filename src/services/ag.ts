@@ -1,18 +1,17 @@
 import { mkdirp, readFileSync, stat } from 'fs-extra'
 import { dirname } from 'path'
-import { $ } from 'tish'
+import { recStream } from './hls'
 
-const serverUrl = readFileSync('.agserver', 'utf8').trim()
+const streamUrl = readFileSync('.agstream', 'utf8').trim()
 
 export const rec = async (length: number, path: string) => {
-    console.log({ serverUrl, length, path })
-    await mkdirp(dirname(path))
+  console.log({ streamUrl, length, path })
+  await mkdirp(dirname(path))
 
-    await $(
-        `rtmpdump --live --rtmp ${serverUrl} --timeout 60 -B ${length} -o "${path}"`,
-    )
-    const { size } = await stat(path)
-    if (!size) {
-        throw new Error('Recorded file is empty')
-    }
+  await recStream(streamUrl, length, path)
+
+  const { size } = await stat(path)
+  if (!size) {
+    throw new Error('Recorded file is empty')
+  }
 }

@@ -8,15 +8,15 @@ import { testRec } from './test-rec'
 
 watchConfig()
 
-schedule.scheduleJob({ second: 50 }, async fireDate => {
-    const currentDate = dayjs(fireDate)
+schedule.scheduleJob({ second: 45 }, async fireDate => {
+  const currentDate = dayjs(fireDate)
 
-    startRecs(currentDate)
-    notifyUpcomingReserves(currentDate)
+  startRecs(currentDate)
+  notifyUpcomingReserves(currentDate)
 })
 
 schedule.scheduleJob({ hour: [0, 12], minute: 0 }, async fireDate => {
-    await testRec()
+  await testRec()
 })
 
 log('started')

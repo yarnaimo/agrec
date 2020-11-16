@@ -1,3 +1,3 @@
 module.exports = {
-    ...require('@yarnaimo/tss/.lintstagedrc.js'),
+  ...require('@yarnaimo/tss/.lintstagedrc.js'),
 }
