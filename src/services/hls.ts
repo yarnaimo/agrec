@@ -2,7 +2,7 @@ import { createWriteStream, mkdirp } from 'fs-extra'
 import got from 'got'
 import { join } from 'path'
 import { $ } from 'tish'
-import { resolve } from 'url'
+import { resolve as resolveUrl } from 'url'
 import { sleep } from './date'
 import { fetchPlaylist, getMediaPlaylistEntry } from './hls-playlist'
 import { log } from './log'
@@ -23,19 +23,26 @@ const startDownload = ({
   segmentUrl,
   outputPath,
   onComplete,
+  onError,
 }: {
   segmentUrl: string
   outputPath: string
   onComplete: () => void
+  onError: (error: unknown) => void
 }) => {
-  const stream = createWriteStream(outputPath)
-  got
-    .stream(segmentUrl, { retry: 10 })
-    .pipe(stream)
+  const stream = got.stream(segmentUrl, { retry: 10 })
+  const fileStream = createWriteStream(outputPath)
+
+  stream
     .on('finish', () => {
       log(`downloaded ${segmentUrl} => ${outputPath}`)
       onComplete()
     })
+    .on('error', error => {
+      onError(error)
+      stream.destroy()
+    })
+    .pipe(fileStream)
 }
 
 const getSegmentsDirPath = (outputFilePath: string) => {
@@ -59,41 +66,48 @@ export const recStream = async (
 
   const entry = await getMediaPlaylistEntry(inputPlaylistUrl)
 
-  while (durationCount < duration) {
-    const playlist = await fetchPlaylist(entry.url)
-    if (playlist.isMasterPlaylist) {
-      throw new Error('fetched playlist is not media playlist')
+  await new Promise(async (resolve, reject) => {
+    while (durationCount < duration) {
+      const playlist = await fetchPlaylist(entry.url)
+      if (playlist.isMasterPlaylist) {
+        throw new Error('fetched playlist is not media playlist')
+      }
+
+      const newSegments = playlist.segments
+        .filter(segment => segment.mediaSequenceNumber > knownSegmentNumber)
+        .slice(durationCount ? 0 : -3) // keep only last segment if first loop
+
+      for (const segment of newSegments) {
+        durationCount += segment.duration
+        knownSegmentNumber = segment.mediaSequenceNumber
+
+        const segmentUrl = resolveUrl(entry.url, segment.uri)
+        const outputPath = getOutputPath({ segmentUrl, segmentsDirPath })
+
+        downloadCompleteFlags[outputPath] = false
+
+        void startDownload({
+          segmentUrl,
+          outputPath,
+          onComplete: () => {
+            downloadCompleteFlags[outputPath] = true
+          },
+          onError: error => {
+            reject(error)
+          },
+        })
+      }
+
+      await sleep(entry.playlist.targetDuration / 2)
     }
 
-    const newSegments = playlist.segments
-      .filter(segment => segment.mediaSequenceNumber > knownSegmentNumber)
-      .slice(durationCount ? 0 : -3) // keep only last segment if first loop
-
-    for (const segment of newSegments) {
-      durationCount += segment.duration
-      knownSegmentNumber = segment.mediaSequenceNumber
-
-      const segmentUrl = resolve(entry.url, segment.uri)
-      const outputPath = getOutputPath({ segmentUrl, segmentsDirPath })
-
-      downloadCompleteFlags[outputPath] = false
-
-      void startDownload({
-        segmentUrl,
-        outputPath,
-        onComplete: () => {
-          downloadCompleteFlags[outputPath] = true
-        },
-      })
+    while (!downloadCompleted()) {
+      log('waiting for downloads complete')
+      await sleep(1)
     }
 
-    await sleep(entry.playlist.targetDuration / 2)
-  }
-
-  while (!downloadCompleted()) {
-    log('waiting for downloads complete')
-    await sleep(1)
-  }
+    resolve()
+  })
 
   await encode({
     paths: Object.keys(downloadCompleteFlags),
