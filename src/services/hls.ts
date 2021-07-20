@@ -30,7 +30,7 @@ const startDownload = ({
 }) => {
   const stream = createWriteStream(outputPath)
   got
-    .stream(segmentUrl)
+    .stream(segmentUrl, { retry: 10 })
     .pipe(stream)
     .on('finish', () => {
       log(`downloaded ${segmentUrl} => ${outputPath}`)
